@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Para Vanessa 🌻</title>
+
+  <style>
+    :root{
+      --bg:#000;
+      --sun1:#ffb703; /* Amarelo principal */
+      --sun2:#fb8500; /* Laranja secundário */
+      --sun3:#3e2723; /* Miolo marrom escuro */
+      --glow:#ffb703;
+      --stem:#12b76a;
+      --leaf1:#1ed760;
+      --leaf2:#17b85a;
+      --text:#ffffff;
+    }
+    *{box-sizing:border-box}
+
+    body{
+      margin:0;
+      height:100vh;
+      display:grid;
+      place-items:center;
+      background:var(--bg);
+      overflow:hidden;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      text-align:center;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Aura Amarela */
+    .aura{
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+      pointer-events:none; z-index:0;
+    }
+    .aura::before{
+      content:"";
+      width:720px;height:720px;
+      background:radial-gradient(circle, rgba(255,183,3,.45) 0%, rgba(255,183,3,.1) 35%, rgba(255,183,3,0) 70%);
+      filter: blur(140px);
+      opacity:.30;
+      animation: glow 6.5s ease-in-out infinite;
+    }
+    @keyframes glow{
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.18)}
+    }
+
+    /* Estrelas */
+    .stars, .stars2{
+      position:absolute; inset:-220px 0 0 0;
+      background-repeat:repeat;
+      pointer-events:none;
+      z-index:0;
+    }
+    .stars{
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.85), transparent 55%),
+        radial-gradient(1px 1px at 120px 80px, rgba(255,255,255,.7), transparent 55%),
+        radial-gradient(1px 1px at 240px 140px, rgba(255,255,255,.6), transparent 55%),
+        radial-gradient(2px 2px at 360px 60px, rgba(255,255,255,.8), transparent 55%),
+        radial-gradient(1px 1px at 480px 120px, rgba(255,255,255,.65), transparent 55%),
+        radial-gradient(1px 1px at 600px 180px, rgba(255,255,255,.6), transparent 55%);
+      background-size: 650px 220px;
+      animation: starMove 18s linear infinite;
+      opacity:.55;
+    }
+    .stars2{
+      background-image:
+        radial-gradient(2px 2px at 50px 160px, rgba(255,255,255,.9), transparent 55%),
+        radial-gradient(1px 1px at 170px 20px, rgba(255,255,255,.75), transparent 55%),
+        radial-gradient(2px 2px at 310px 190px, rgba(255,255,255,.8), transparent 55%),
+        radial-gradient(1px 1px at 430px 50px, rgba(255,255,255,.7), transparent 55%),
+        radial-gradient(2px 2px at 560px 140px, rgba(255,255,255,.85), transparent 55%);
+      background-size: 620px 240px;
+      animation: starMove 26s linear infinite reverse;
+      opacity:.33;
+    }
+    @keyframes starMove{
+      from{transform:translateY(0)}
+      to{transform:translateY(240px)}
+    }
+
+    /* Card */
+    .card{
+      position:relative;
+      z-index:2;
+      width:min(780px, 92vw);
+      padding: 22px 18px 16px;
+      border-radius: 22px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 18px 60px rgba(0,0,0,.55);
+    }
+    .title{
+      margin: 4px 0 10px;
+      font-size: 1.05rem;
+      letter-spacing: .6px;
+      opacity:.92;
+    }
+
+    /* Cena */
+    .scene{
+      width:min(520px, 92%);
+      aspect-ratio: 1/1.05;
+      margin: 6px auto 0;
+      position:relative;
+      filter: drop-shadow(0 18px 30px rgba(0,0,0,.65));
+    }
+
+    /* Partículas subindo */
+    .spark{
+      position:absolute;
+      left:var(--x);
+      bottom:-20px;
+      width:5px;height:5px;
+      border-radius:999px;
+      background: rgba(255,255,255,.95);
+      opacity:0;
+      animation: sparkUp var(--d) linear infinite;
+      filter: blur(.2px);
+    }
+    @keyframes sparkUp{
+      0%{transform:translateY(0) scale(.6); opacity:0}
+      15%{opacity:.9}
+      70%{opacity:.25}
+      100%{transform:translateY(-260px) scale(1.15); opacity:0}
+    }
+
+    /* Pétalas caindo (agora amarelas) */
+    .fall{
+      position:absolute;
+      top:-40px;
+      left:var(--x);
+      width: 18px;
+      height: 14px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.35), rgba(255,255,255,0) 45%),
+        linear-gradient(135deg, var(--sun2), var(--sun1));
+      border-radius: 60% 40% 60% 40% / 60% 40% 60% 40%;
+      opacity:0;
+      transform: rotate(var(--r));
+      animation: petalFall var(--t) linear infinite;
+      filter: drop-shadow(0 8px 14px rgba(0,0,0,.5));
+    }
+    @keyframes petalFall{
+      0%{ transform: translateY(0) translateX(0) rotate(var(--r)); opacity:0; }
+      10%{opacity:.85}
+      100%{ transform: translateY(740px) translateX(var(--dx)) rotate(calc(var(--r) + 240deg)); opacity:0; }
+    }
+
+    /* Girassol nasce + flutua */
+    #roseWrap{
+      position:absolute; inset:0;
+      display:grid; place-items:center;
+    }
+    svg{
+      width:100%;
+      height:100%;
+      transform: scale(0);
+      animation: grow 1.9s ease forwards, float 4.2s ease-in-out infinite 1.9s;
+      filter: drop-shadow(0 0 26px rgba(255,183,3,.45));
+      will-change: transform;
+    }
+    @keyframes grow{ to{transform:scale(1)} }
+    @keyframes float{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-16px)}
+    }
+
+    /* Batida */
+    .beat svg{
+      animation:
+        grow 1.9s ease forwards,
+        float 4.2s ease-in-out infinite 1.9s,
+        beat 1.05s ease-in-out infinite 2.4s;
+    }
+    @keyframes beat{
+      0%,100%{ filter: drop-shadow(0 0 24px rgba(255,183,3,.45)); }
+      50%{ filter: drop-shadow(0 0 34px rgba(255,183,3,.65)); }
+    }
+
+    /* Pétalas do girassol “respirando” */
+    .petalA{transform-origin: 100px 74px; animation: breathe 2.9s ease-in-out infinite}
+    .petalB{transform-origin: 100px 74px; animation: breathe 3.2s ease-in-out infinite reverse}
+    .petalC{transform-origin: 100px 74px; animation: breathe 2.6s ease-in-out infinite}
+    @keyframes breathe{
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.04)}
+    }
+
+    /* Texto digitando (frase atualizada para a Vanessa) */
+    .type{
+      margin: 14px auto 2px;
+      width: min(50ch, 95%);
+      font-size: 1.05rem;
+      line-height: 1.35;
+      opacity: .98;
+
+      border-right: 2px solid rgba(255,255,255,.9);
+      white-space: nowrap;
+      overflow: hidden;
+      width: 0;
+      animation:
+        typing 4.6s steps(52,end) forwards 2.2s,
+        blink .7s step-end infinite 2.2s;
+    }
+    @keyframes typing{ to{ width: 50ch; } }
+    @keyframes blink{ 50%{ border-color: transparent; } }
+
+    .sub{
+      margin: 10px 0 0;
+      font-size:.88rem;
+      opacity:.65;
+    }
+
+    /* ===== BRILHO MÁGICO AO TOQUE (Tons de Sol) ===== */
+    .touchGlow{
+      position:absolute;
+      width:20px;
+      height:20px;
+      border-radius:50%;
+      pointer-events:none;
+      background:radial-gradient(circle,
+          rgba(255,255,255,1) 0%,
+          rgba(255,215,0,.9) 30%,
+          rgba(255,140,0,.4) 55%,
+          transparent 70%);
+      transform:translate(-50%,-50%) scale(.2);
+      animation:glowTouch 900ms ease-out forwards;
+      filter:blur(1px);
+      opacity:0;
+    }
+    @keyframes glowTouch{
+      0%{opacity:1; transform:translate(-50%,-50%) scale(.2)}
+      60%{opacity:.9}
+      100%{opacity:0; transform:translate(-50%,-50%) scale(6)}
+    }
+
+    /* “pétala extra” no toque (Amarela) */
+    .tapPetal{
+      position:absolute;
+      width: 20px; height: 15px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,.25), rgba(255,255,255,0) 45%),
+        linear-gradient(135deg, var(--sun2), var(--sun1));
+      border-radius: 60% 40% 60% 40% / 60% 40% 60% 40%;
+      filter: drop-shadow(0 10px 16px rgba(0,0,0,.55));
+      pointer-events:none;
+      transform: translate(-50%,-50%) rotate(var(--r));
+      animation: tapFall 1200ms ease-in forwards;
+      opacity:0;
+    }
+    @keyframes tapFall{
+      0%{opacity:0; transform: translate(-50%,-50%) translateY(0) rotate(var(--r)) scale(.8)}
+      15%{opacity:.95}
+      100%{opacity:0; transform: translate(-50%,-50%) translateY(260px) translateX(var(--dx)) rotate(calc(var(--r) + 240deg)) scale(1.05)}
+    }
+
+    /* Botão som */
+    #soundBtn{
+      margin-top:10px;
+      padding:10px 14px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.08);
+      color:white;
+      font-size:14px;
+    }
+
+    @media (max-width:420px){
+      .type{ font-size: 0.95rem; }
+      svg{ filter: drop-shadow(0 0 22px rgba(255,183,3,.4)); }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stars" aria-hidden="true"></div>
+  <div class="stars2" aria-hidden="true"></div>
+  <div class="aura" aria-hidden="true"></div>
+
+  <div class="card" id="card">
+    <div class="title">Para a Vanessa 🌻</div>
+
+    <div class="scene" id="scene">
+      <div class="spark" style="--x:12%;--d:4.6s"></div>
+      <div class="spark" style="--x:22%;--d:5.2s;animation-delay:.8s"></div>
+      <div class="spark" style="--x:35%;--d:4.2s;animation-delay:1.6s"></div>
+      <div class="spark" style="--x:48%;--d:5.1s;animation-delay:.3s"></div>
+      <div class="spark" style="--x:62%;--d:4.7s;animation-delay:1.2s"></div>
+      <div class="spark" style="--x:74%;--d:5.4s;animation-delay:2.0s"></div>
+      <div class="spark" style="--x:86%;--d:4.9s;animation-delay:1.0s"></div>
+
+      <div class="fall" style="--x:18%;--t:7.8s;--dx:20px;--r:-20deg;animation-delay:1.2s"></div>
+      <div class="fall" style="--x:38%;--t:9.2s;--dx:-24px;--r:10deg;animation-delay:2.8s"></div>
+      <div class="fall" style="--x:58%;--t:8.6s;--dx:16px;--r:28deg;animation-delay:4.1s"></div>
+      <div class="fall" style="--x:78%;--t:10.2s;--dx:-18px;--r:-12deg;animation-delay:3.4s"></div>
+
+      <div id="roseWrap" class="beat">
+        <svg viewBox="0 0 200 260" role="img" aria-label="Girassol animado">
+          <path d="M100 120 C104 160, 96 200, 98 250
+                   C99 258, 106 258, 107 250
+                   C110 200, 110 160, 106 120 Z"
+                fill="var(--stem)"/>
+
+          <path d="M98 170 C70 155, 45 165, 35 190
+                   C50 210, 80 212, 98 196
+                   C104 191, 104 176, 98 170 Z"
+                fill="var(--leaf1)" opacity=".95"/>
+          <path d="M110 178 C135 158, 165 160, 178 182
+                   C165 210, 135 210, 112 195
+                   C106 191, 104 183, 110 178 Z"
+                fill="var(--leaf2)" opacity=".95"/>
+
+          <g class="petalA">
+            <ellipse cx="100" cy="74" rx="60" ry="20" fill="var(--sun1)" transform="rotate(0 100 74)"/>
+            <ellipse cx="100" cy="74" rx="60" ry="20" fill="var(--sun1)" transform="rotate(30 100 74)"/>
+            <ellipse cx="100" cy="74" rx="60" ry="20" fill="var(--sun1)" transform="rotate(60 100 74)"/>
+            <ellipse cx="100" cy="74" rx="60" ry="20" fill="var(--sun1)" transform="rotate(90 100 74)"/>
+            <ellipse cx="100" cy="74" rx="60" ry="20" fill="var(--sun1)" transform="rotate(120 100 74)"/>
+            <ellipse cx="100" cy="74" rx="60" ry="20" fill="var(--sun1)" transform="rotate(150 100 74)"/>
+          </g>
+          <g class="petalB">
+            <ellipse cx="100" cy="74" rx="45" ry="15" fill="var(--sun2)" transform="rotate(15 100 74)"/>
+            <ellipse cx="100" cy="74" rx="45" ry="15" fill="var(--sun2)" transform="rotate(45 100 74)"/>
+            <ellipse cx="100" cy="74" rx="45" ry="15" fill="var(--sun2)" transform="rotate(75 100 74)"/>
+            <ellipse cx="100" cy="74" rx="45" ry="15" fill="var(--sun2)" transform="rotate(105 100 74)"/>
+            <ellipse cx="100" cy="74" rx="45" ry="15" fill="var(--sun2)" transform="rotate(135 100 74)"/>
+            <ellipse cx="100" cy="74" rx="45" ry="15" fill="var(--sun2)" transform="rotate(165 100 74)"/>
+          </g>
+          
+          <circle class="petalC" cx="100" cy="74" r="28" fill="var(--sun3)"/>
+          <circle cx="100" cy="74" r="20" fill="rgba(0,0,0,.2)" stroke-dasharray="4 4" stroke="rgba(255,183,3,.4)" stroke-width="3"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="type">Vanessa, seu esforço diário é inspirador! 🌻</div>
+    <div class="sub">Toque na tela ✨ (ou clique no som)</div>
+
+    <button id="soundBtn" type="button">🔊 Ativar som</button>
+  </div>
+
+  <audio id="music" loop preload="auto" playsinline>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    const music = document.getElementById("music");
+    const scene = document.getElementById("scene");
+    const soundBtn = document.getElementById("soundBtn");
+
+    async function enableSound(){
+      try{
+        await music.play();
+        soundBtn.textContent = "🔊 Som ativado";
+        soundBtn.style.opacity = "0.75";
+      }catch(e){
+        soundBtn.textContent = "Toque de novo 🙂";
+      }
+    }
+
+    soundBtn.addEventListener("click", enableSound);
+
+    document.addEventListener("touchstart", enableSound, {passive:true});
+    document.addEventListener("click", enableSound, {passive:true});
+
+    function touchFX(clientX, clientY){
+      const rect = scene.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      if(x < 0 || y < 0 || x > rect.width || y > rect.height) return;
+
+      const glow = document.createElement("div");
+      glow.className = "touchGlow";
+      glow.style.left = x + "px";
+      glow.style.top  = y + "px";
+      scene.appendChild(glow);
+      setTimeout(()=> glow.remove(), 900);
+
+      for(let i=0;i<4;i++){
+        const mini = document.createElement("div");
+        mini.className = "touchGlow";
+        mini.style.left = (x + (Math.random()*40-20)) + "px";
+        mini.style.top  = (y + (Math.random()*40-20)) + "px";
+        mini.style.animationDuration = "700ms";
+        scene.appendChild(mini);
+        setTimeout(()=> mini.remove(), 700);
+      }
+
+      const p = document.createElement("div");
+      p.className = "tapPetal";
+      const r = (Math.random()*60 - 30).toFixed(1) + "deg";
+      const dx = (Math.random()*80 - 40).toFixed(0) + "px";
+      p.style.setProperty("--r", r);
+      p.style.setProperty("--dx", dx);
+      p.style.left = x + "px";
+      p.style.top  = y + "px";
+      scene.appendChild(p);
+      setTimeout(()=> p.remove(), 1250);
+
+      enableSound();
+    }
+
+    scene.addEventListener("click", (e)=> touchFX(e.clientX, e.clientY));
+    scene.addEventListener("touchstart", (e)=>{
+      const t = e.touches && e.touches[0];
+      if(t) touchFX(t.clientX, t.clientY);
+    }, {passive:true});
+  </script>
+</body>
+</html>
