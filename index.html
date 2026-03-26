@@ -8,9 +8,9 @@
   <style>
     :root{
       --bg:#000;
-      --sun1:#ffb703; /* Amarelo principal */
-      --sun2:#fb8500; /* Laranja secundário */
-      --sun3:#3e2723; /* Miolo marrom escuro */
+      --sun1:#ffb703; 
+      --sun2:#fb8500; 
+      --sun3:#3e2723; 
       --glow:#ffb703;
       --stem:#12b76a;
       --leaf1:#1ed760;
@@ -134,7 +134,7 @@
       100%{transform:translateY(-260px) scale(1.15); opacity:0}
     }
 
-    /* Pétalas caindo (agora amarelas) */
+    /* Pétalas caindo */
     .fall{
       position:absolute;
       top:-40px;
@@ -196,24 +196,46 @@
       50%{transform:scale(1.04)}
     }
 
-    /* Texto digitando (frase atualizada para a Vanessa) */
-    .type{
+    /* ===== TEXTOS DIGITANDO (2 LINHAS) ===== */
+    .text-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    .type {
       margin: 14px auto 2px;
-      width: min(50ch, 95%);
       font-size: 1.05rem;
-      line-height: 1.35;
-      opacity: .98;
-
-      border-right: 2px solid rgba(255,255,255,.9);
       white-space: nowrap;
       overflow: hidden;
+      border-right: 2px solid rgba(255,255,255,.9);
       width: 0;
-      animation:
-        typing 4.6s steps(52,end) forwards 2.2s,
-        blink .7s step-end infinite 2.2s;
+      /* Digita a primeira frase e depois esconde o cursor */
+      animation: typing1 2.5s steps(38, end) forwards 2.2s, hideCursor 0s forwards 4.7s;
     }
-    @keyframes typing{ to{ width: 50ch; } }
-    @keyframes blink{ 50%{ border-color: transparent; } }
+    
+    .type2 {
+      margin: 2px auto 8px;
+      font-size: 1.05rem;
+      color: var(--sun1);
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid transparent;
+      width: 0;
+      /* Começa a digitar a segunda frase depois da primeira */
+      animation: typing2 2.5s steps(42, end) forwards 4.7s, blink .7s step-end infinite 4.7s;
+    }
+
+    @keyframes typing1 { to { width: 39ch; } }
+    @keyframes hideCursor { to { border-color: transparent; } }
+    
+    @keyframes typing2 { 
+      0% { border-color: rgba(255,255,255,.9); width: 0; }
+      100% { border-color: rgba(255,255,255,.9); width: 41ch; }
+    }
+    @keyframes blink { 50% { border-color: transparent; } }
 
     .sub{
       margin: 10px 0 0;
@@ -221,7 +243,7 @@
       opacity:.65;
     }
 
-    /* ===== BRILHO MÁGICO AO TOQUE (Tons de Sol) ===== */
+    /* ===== BRILHO MÁGICO AO TOQUE ===== */
     .touchGlow{
       position:absolute;
       width:20px;
@@ -244,7 +266,7 @@
       100%{opacity:0; transform:translate(-50%,-50%) scale(6)}
     }
 
-    /* “pétala extra” no toque (Amarela) */
+    /* “pétala extra” no toque */
     .tapPetal{
       position:absolute;
       width: 20px; height: 15px;
@@ -276,7 +298,7 @@
     }
 
     @media (max-width:420px){
-      .type{ font-size: 0.95rem; }
+      .type, .type2 { font-size: 0.90rem; }
       svg{ filter: drop-shadow(0 0 22px rgba(255,183,3,.4)); }
     }
   </style>
@@ -306,20 +328,9 @@
 
       <div id="roseWrap" class="beat">
         <svg viewBox="0 0 200 260" role="img" aria-label="Girassol animado">
-          <path d="M100 120 C104 160, 96 200, 98 250
-                   C99 258, 106 258, 107 250
-                   C110 200, 110 160, 106 120 Z"
-                fill="var(--stem)"/>
-
-          <path d="M98 170 C70 155, 45 165, 35 190
-                   C50 210, 80 212, 98 196
-                   C104 191, 104 176, 98 170 Z"
-                fill="var(--leaf1)" opacity=".95"/>
-          <path d="M110 178 C135 158, 165 160, 178 182
-                   C165 210, 135 210, 112 195
-                   C106 191, 104 183, 110 178 Z"
-                fill="var(--leaf2)" opacity=".95"/>
-
+          <path d="M100 120 C104 160, 96 200, 98 250 C99 258, 106 258, 107 250 C110 200, 110 160, 106 120 Z" fill="var(--stem)"/>
+          <path d="M98 170 C70 155, 45 165, 35 190 C50 210, 80 212, 98 196 C104 191, 104 176, 98 170 Z" fill="var(--leaf1)" opacity=".95"/>
+          <path d="M110 178 C135 158, 165 160, 178 182 C165 210, 135 210, 112 195 C106 191, 104 183, 110 178 Z" fill="var(--leaf2)" opacity=".95"/>
           <g class="petalA">
             <ellipse cx="100" cy="74" rx="60" ry="20" fill="var(--sun1)" transform="rotate(0 100 74)"/>
             <ellipse cx="100" cy="74" rx="60" ry="20" fill="var(--sun1)" transform="rotate(30 100 74)"/>
@@ -336,14 +347,17 @@
             <ellipse cx="100" cy="74" rx="45" ry="15" fill="var(--sun2)" transform="rotate(135 100 74)"/>
             <ellipse cx="100" cy="74" rx="45" ry="15" fill="var(--sun2)" transform="rotate(165 100 74)"/>
           </g>
-          
           <circle class="petalC" cx="100" cy="74" r="28" fill="var(--sun3)"/>
           <circle cx="100" cy="74" r="20" fill="rgba(0,0,0,.2)" stroke-dasharray="4 4" stroke="rgba(255,183,3,.4)" stroke-width="3"/>
         </svg>
       </div>
     </div>
 
-    <div class="type">Vanessa, seu esforço diário é inspirador! 🌻</div>
+    <div class="text-container">
+      <div class="type">Vanessa, seu esforço é inspirador! 🌻</div>
+      <div class="type2">E você é a mulher mais linda do mundo! ✨</div>
+    </div>
+    
     <div class="sub">Toque na tela ✨ (ou clique no som)</div>
 
     <button id="soundBtn" type="button">🔊 Ativar som</button>
